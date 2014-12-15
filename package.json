@@ -1,0 +1,16 @@
+{
+  "name": "minion-js",
+  "version": "1.0.0",
+  "description": "Minion-part of the Mastermind-Minion duo.",
+  "main": "minion.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "st.never@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^2.4.1",
+    "request": "^2.51.0",
+    "uuid": "^2.0.1"
+  }
+}
