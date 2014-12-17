@@ -36,7 +36,7 @@ exports.launch = function(config, defaults, callback) {
 		res.setTimeout(config.timeoutMillis, function() {
 			options.t1 = Date.now()
 			req.abort()
-			callback("response timeout", null, options)
+			callback("response timeout", null, null, options)
 		})
 	})
 
@@ -47,11 +47,12 @@ exports.launch = function(config, defaults, callback) {
 	req.setTimeout(config.timeoutMillis, function() {
 		options.t1 = Date.now()
 		req.abort()
-		callback("request timeout", null, options)
+		callback("request timeout", null, null, options)
 	})
 
 	req.on('error', function(e) {
-	  callback(e)
+		options.t1 = Date.now()
+	  callback(e, null, null, options)
 	});
 
 	// write data to request body
