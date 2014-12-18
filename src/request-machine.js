@@ -1,7 +1,7 @@
 var http = require('http');
 http.globalAgent.maxSockets = 1000;
 
-var gear = require('./request-gear.js')
+var tube = require('./request-tube.js')
 var _ = require('lodash')
 
 var timers = {};
@@ -24,9 +24,12 @@ exports.start = function(config) {
   console.log("Running request machine")
   status = 'running'
 
-  totalRequests = 0 
-  pending = {} 
-  config.threads.forEach(function(t) {
+  totalRequests = 0
+  pending = {}
+
+  tubes = config.threads || config.tubes;
+
+  tubes.forEach(function(t) {
     // TODO calcular rate
     timers[t.id] = setInterval(function() {
       var pendingReq = pending[t.id]
@@ -36,7 +39,7 @@ exports.start = function(config) {
       }
 
       pending[t.id] = pending[t.id] + 1
-      gear.launch(t, config.defaults, function(err, status, body, options) {
+      tube.launch(t, config.defaults, function(err, status, body, options) {
         pending[t.id] = pending[t.id] - 1;
         var dt = options.t1 - options.t0;
         totalRequests++;
@@ -45,6 +48,9 @@ exports.start = function(config) {
           console.log( "req " + options.id + ": " + options.method
             + " " + options.hostname + options.path + " HTTP "
             + status + " " + dt + "ms")
+
+          if ( status >= 400 )
+            console.log(body)
         }
       })
     }, t.rate)
@@ -63,4 +69,3 @@ exports.getTotalRequests = function() {
   return totalRequests
 }
 
-    
